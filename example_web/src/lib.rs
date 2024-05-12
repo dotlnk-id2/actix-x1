@@ -3,15 +3,17 @@ pub mod api {
 
 
     pub fn config_api(cfg: &mut ServiceConfig) {
-        test::load_test(cfg);
+        test::load_config(cfg);
+        health::load_config(cfg);
+        v1::load_config(cfg);
     }
 
     pub mod test {
         use actix_web::{get, post, web::{self, ServiceConfig}, HttpResponse, Responder};
 
-        pub(crate) fn load_test(cfg: &mut ServiceConfig){
+        pub(crate) fn load_config(cfg: &mut ServiceConfig){
             cfg
-            .route("/hello/world",web::get().to(hello))
+            .service(web::scope("/test"))            .route("/hello/world",web::get().to(hello))
             .route("/echo",web::post().to(echo))
             .route("/hey", web::get().to(manual_hello));
 
@@ -32,8 +34,63 @@ pub mod api {
             HttpResponse::Ok().body("Hey there!")
         }
     }
+
+    pub mod health {
+        use actix_web::{web::{self, ServiceConfig}, HttpResponse, Responder};
+
+        pub(crate) fn load_config(cfg: &mut ServiceConfig){
+            cfg
+            .route("/health",web::get().to(hello))
+        }
+
+        async fn health() -> impl Responder {
+            HttpResponse::Ok().json("Hello world!")
+        }
+
+    }
+
+    pub mod v1 {
+        use actix_web::{web::{self, ServiceConfig}, HttpResponse, Responder};
+
+        pub const PATH_PERFIX : &str = "/api/v1";
+
+        pub(crate) fn load_config(cfg: &mut ServiceConfig){
+            cfg
+            .service(web::scope(PATH_PERFIX))
+            .route("/goods/list/${type}",web::post().to(goods_list))
+            .route("/goods/${id}",web::post().to(goods_list))
+        }
+
+        async fn goods_list() -> impl Responder {
+            HttpResponse::Ok().json("Hello world!")
+        }
+
+        async fn goods_detail() -> impl Responder {
+            HttpResponse::Ok().json("Hello world!")
+        }
+
+    }
 }
 
-pub mod StateMachine{
+pub mod state_machine{
+    use std::collections::HashMap;
 
+    use serde::{Deserialize, Serialize};
+
+
+    #[derive(Debug,Deserialize,Serialize,Clone)]
+    pub struct ConfFSMap{
+        bind_addr:String,
+
+        db_conf:CfgDatabase,
+        dici: HashMap<String,String>,
+    }
+
+    #[derive(Debug,Deserialize,Serialize,Clone)]
+    pub struct CfgDatabase{
+        db_url:String,
+        db_user:String,
+        db_passwd:String,
+    }
 }
+
