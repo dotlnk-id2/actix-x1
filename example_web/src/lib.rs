@@ -13,9 +13,10 @@ pub mod api {
 
         pub(crate) fn load_config(cfg: &mut ServiceConfig){
             cfg
-            .service(web::scope("/test"))            .route("/hello/world",web::get().to(hello))
+            .service(web::scope("/test")           
+            .route("/hello/world",web::get().to(hello))
             .route("/echo",web::post().to(echo))
-            .route("/hey", web::get().to(manual_hello));
+            .route("/hey", web::get().to(manual_hello)));
 
         }
 
@@ -40,7 +41,7 @@ pub mod api {
 
         pub(crate) fn load_config(cfg: &mut ServiceConfig){
             cfg
-            .route("/health",web::get().to(hello))
+            .route("/health",web::get().to(health));
         }
 
         async fn health() -> impl Responder {
@@ -56,9 +57,9 @@ pub mod api {
 
         pub(crate) fn load_config(cfg: &mut ServiceConfig){
             cfg
-            .service(web::scope(PATH_PERFIX))
+            .service(web::scope(PATH_PERFIX)
             .route("/goods/list/${type}",web::post().to(goods_list))
-            .route("/goods/${id}",web::post().to(goods_list))
+            .route("/goods/${id}",web::post().to(goods_detail)));
         }
 
         async fn goods_list() -> impl Responder {

@@ -12,12 +12,14 @@ version = "0.1.0"
 features = "0.10"
 tokio = {version = "1.37", features = ["full"]}
 
-actix-web = "4"
+actix-web =  {version = "4", features = ["openssl"] }
 # axum="0.7"
 # tower = "0.4"
 config = "0.14"
 serde = "1.0"
 serde_json = "1.0"
+
+openssl = { version = "0.10" }
 
 libsm = "0.6"
 

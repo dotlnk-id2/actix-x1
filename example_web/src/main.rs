@@ -1,6 +1,9 @@
+use std::time::Duration;
+
 use actix_web::{web, App,HttpServer};
 
 use example_web::api;
+use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -9,13 +12,23 @@ async fn main() -> std::io::Result<()> {
 
     let bind = ("0.0.0.0", 8080);
 
-    let builder = HttpServer::new(|| {
+
+    let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
+    builder
+        .set_private_key_file("./ssl/key.pem", SslFiletype::PEM).unwrap();
+    builder.set_certificate_chain_file("./ssl/cert.pem").unwrap();
+
+    let server = HttpServer::new(|| {
         App::new()
         .configure(api::config_api)
     })
-    .bind(bind);
+    .workers(8)
+    .keep_alive(Duration::from_secs(30))
+    .shutdown_timeout(40)
+    // .bind(bind);
+    .bind_openssl(bind, builder);
 
-    match builder {
+    match server {
         Ok(thread) => {
             tracing::info!("tcp_bind {}:{} Ok !!!",bind.0,bind.1);
             thread.run().await
