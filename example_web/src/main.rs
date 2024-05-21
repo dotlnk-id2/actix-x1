@@ -1,6 +1,7 @@
 use std::time::Duration;
 
-use actix_web::{web, App,HttpServer};
+// use actix_web::web;
+use actix_web::{App,HttpServer};
 
 use example_web::api;
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
@@ -11,8 +12,6 @@ async fn main() -> std::io::Result<()> {
     tracing_subscriber::fmt::init();
 
     let bind = ("0.0.0.0", 8080);
-
-
     let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
     builder
         .set_private_key_file("./ssl/key.pem", SslFiletype::PEM).unwrap();
