@@ -1,0 +1,12 @@
+server_addr="0.0.0.0:8080"
+
+[database]
+host="localhost"
+user="postgres"
+
+[[route_mapping]]
+prefix="/api/notes/"
+target="notes-api1"
+[[route_mapping]]
+prefix="/api/notes/"
+target="notes-api2"

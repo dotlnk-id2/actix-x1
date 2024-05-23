@@ -11,13 +11,16 @@ pub mod api {
     pub mod test {
         use actix_web::{get, post, web::{self, ServiceConfig}, HttpResponse, Responder};
 
-        pub(crate) fn load_config(cfg: &mut ServiceConfig){
-            cfg
-            .service(web::scope("/test")           
-            .route("/hello/world",web::get().to(hello))
-            .route("/echo",web::post().to(echo))
-            .route("/hey", web::get().to(manual_hello)));
+        pub const PATH_PREFIX_V1: &str = "/test";
 
+        pub(crate) fn load_config(cfg: &mut ServiceConfig){
+            cfg.service(
+                web
+                    ::scope(PATH_PREFIX_V1)
+                    .route("/hello/world", web::get().to(hello))
+                    .route("/echo", web::post().to(echo))
+                    .route("/hey", web::get().to(manual_hello))
+            );
         }
 
         // #[get("/hello/world")]
@@ -95,3 +98,29 @@ pub mod state_machine{
     }
 }
 
+
+pub mod config_toml {
+    use serde::Deserialize;
+
+    #[derive(Debug, Default, Deserialize)]
+    pub struct AppConfig {
+        pub server_addr: String,
+        // pub port: u16,
+        // pub redis_addr: String,
+        // pub redis_port: u16,
+        pub database: Database,
+        pub route_mapping: Vec<RouteMapping>,
+    }
+
+    #[derive(Deserialize, Debug, Clone, Default)]
+    pub struct Database {
+        pub host: String,
+        pub user: String,
+    }
+
+    #[derive(Deserialize, Debug, Clone)]
+    pub struct RouteMapping {
+        pub prefix: String,
+        pub target: String,
+    }
+}
