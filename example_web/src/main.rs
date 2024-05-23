@@ -1,6 +1,7 @@
 use std::time::Duration;
 
-use actix_web::{web, App,HttpServer};
+// use actix_web::web;
+use actix_web::{App,HttpServer};
 
 use config::{Config, File};
 use example_web::{api, config_toml::AppConfig};
