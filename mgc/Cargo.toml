@@ -1,0 +1,9 @@
+[package]
+name = "mgc"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+features = "0.10"
+tokio = {version = "1.37", features = ["full"]}
+mongodb = "3.0.1"

@@ -9,7 +9,8 @@ pub mod api {
     }
 
     pub mod test {
-        use actix_web::{get, post, web::{self, ServiceConfig}, HttpResponse, Responder};
+        // use actix_web::{get, post}
+        use actix_web::{ web::{self, ServiceConfig}, HttpResponse, Responder};
 
         pub const PATH_PREFIX_V1: &str = "/test";
 
@@ -101,10 +102,11 @@ pub mod state_machine{
 
 pub mod config_toml {
     use serde::Deserialize;
+    use std::sync::Arc;
 
     #[derive(Debug, Default, Deserialize)]
     pub struct AppConfig {
-        pub server_addr: String,
+        pub server_addr: Arc<String>,
         // pub port: u16,
         // pub redis_addr: String,
         // pub redis_port: u16,
