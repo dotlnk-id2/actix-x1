@@ -7,9 +7,8 @@ use std::env;
 
 #[tokio::main]
 async fn main() -> mongodb::error::Result<()> {
-
-    let client_uri =
-        env::var("MONGODB_URI").expect("You must set the MONGODB_URI environment var!");
+    let up = "";
+    let client_uri = format!("mongodb://{}127.0.0.1:27017",up);
 
     let mut client_options = ClientOptions::parse(client_uri).await?;
 
