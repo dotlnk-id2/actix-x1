@@ -6,7 +6,7 @@ use mongodb::{
 
 #[tokio::main]
 async fn main() -> mongodb::error::Result<()> {
-    let mut client_options = ClientOptions::parse("mongodb+srv://whoami:frankson1@mg-jp-n1.xvwgqlk.mongodb.net/?retryWrites=true&w=majority&appName=mg-jp-n1").await?;
+    let mut client_options = ClientOptions::parse("mongodb+srv://whoami:test1test2@mg-jp-n1.xvwgqlk.mongodb.net/?retryWrites=true&w=majority&appName=mg-jp-n1").await?;
 
     // Set the server_api field of the client_options object to set the version of the Stable API on the client
     let server_api = ServerApi::builder().version(ServerApiVersion::V1).build();
