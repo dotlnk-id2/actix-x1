@@ -1,7 +1,8 @@
 use crate::commands::Command;
 use std::io;
 use std::net::SocketAddr;
-use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader, BufWriter};
+use serde_json::json;
+use tokio::io::{AsyncBufReadExt, AsyncReadExt, AsyncWriteExt, BufReader, BufStream, BufWriter};
 use tokio::net::{TcpListener, TcpStream};
 
 pub async fn start_server(addr: &str) -> io::Result<()> {
@@ -24,7 +25,8 @@ async fn handle_client(socket: TcpStream) -> io::Result<()> {
     loop {
         println!("thread={:?}",std::thread::current());
         let mut buffer = String::new();
-        reader.read_line(&mut buffer).await?;
+        reader.read_line( &mut buffer).await.unwrap();
+        println!("1111={:?}",buffer);
 
         if buffer.is_empty() {
             break;
@@ -41,16 +43,23 @@ async fn handle_client(socket: TcpStream) -> io::Result<()> {
 
         println!("cmd={:?}",command);
 
-        let mut response = match command {
+        let response = match command {
             Command::GetHelloWorld => "Hello, world!".to_string(),
-            Command::PostGreeting { message } => format!("Received greeting: {}", message),
-            Command::CmdError { message } => format!("Received greeting: {}", message),
+            Command::PostGreeting { message } => format!("{}", message),
+            Command::CmdError { message } => format!("{}", message),
         };
 
-        writer.write_all(response.as_bytes()).await.expect("write");
-        writer.flush().await.expect("flush");
-        // println!("flush={:?}",response);
+        // let response = json!({"PostGreeting": {"message": "Ok,PostGreeting!Too"}}).to_string() + "\n";
+        let v = response.to_string()+ "\n"+",test1test2"+"\n";
+        println!("v={}",v);
+        println!("write_all={:?}",writer.write_all(v.as_bytes()).await?);
+        println!("is_empty1={:?}",writer.buffer().is_empty());
+        println!("flush={:?}",writer.flush().await?);
+        println!("is_empty2={:?}",writer.buffer().is_empty());
+        // break;
     }
+
+    println!("?????loop?????={:?}",std::time::SystemTime::now());
 
     Ok(())
 }

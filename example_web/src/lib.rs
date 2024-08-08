@@ -101,10 +101,10 @@ pub mod state_machine{
 
 
 pub mod config_toml {
-    use serde::Deserialize;
+    use serde::{Deserialize, Serialize};
     use std::sync::Arc;
 
-    #[derive(Debug, Default, Deserialize)]
+    #[derive(Debug, Default, Deserialize, Serialize)]
     pub struct AppConfig {
         pub server_addr: Arc<String>,
         // pub port: u16,
